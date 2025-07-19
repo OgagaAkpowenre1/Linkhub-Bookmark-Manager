@@ -1,0 +1,12 @@
+image: gitpod/workspace-full:latest
+
+tasks:
+  - name: Start Services
+    init: |
+      sudo service postgresql start
+      sudo -u postgres psql -c "CREATE USER linkhub_user WITH PASSWORD 'securepassword';"
+      sudo -u postgres createdb -O linkhub_user linkhub_db
+
+ports:
+  - port: 5432
+    onOpen: ignore

@@ -1,7 +1,5 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import {Button} from './components/ui/button'
 
 export default function App() {
   return (
@@ -9,6 +7,7 @@ export default function App() {
       <h1 className="text-4xl font-bold text-green-900">
         Tailwind is working!
       </h1>
+      <Button>Click me</Button>
     </div>
   )
 }
