@@ -14,3 +14,12 @@ Then deploy
 Database: supabase
 Create a new project, add a table like users
 take db url and other urls and store as env values
+
+Google console cloud
+
+to do
+add google sign up
+add bookmark CRUD routes
+add tags CRUD routes
+improve styling
+
