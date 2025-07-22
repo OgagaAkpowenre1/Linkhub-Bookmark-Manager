@@ -4,3 +4,13 @@ source venv/bin/activate
 uvicorn main:app --reload
 
 T7mJ0Hdm1rhIKyTK
+
+setting up a database and server
+Server: Render
+Straightforward enough, put in database url,  supabase url, anon url (supabase) as env values
+freeze requirements
+Then deploy
+
+Database: supabase
+Create a new project, add a table like users
+take db url and other urls and store as env values
