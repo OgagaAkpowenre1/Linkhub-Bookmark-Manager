@@ -1,0 +1,6 @@
+to start server
+cd backend
+source venv/bin/activate
+uvicorn main:app --reload
+
+T7mJ0Hdm1rhIKyTK
