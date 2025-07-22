@@ -1,27 +1,26 @@
-from fastapi import FastAPI, Depends
-from sqlalchemy.orm import Session
-from sqlalchemy import text
-from database import SessionLocal
+from fastapi import FastAPI
+from supabase import create_client, Client
+import os
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = FastAPI()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @app.get("/")
 def read_root():
     return {"message": "LinkHub backend is running!"}
 
-@app.get("/ping-db")
-def ping_db(db: Session = Depends(get_db)):
-    db.execute(text("SELECT 1"))
-    return {"message": "Connected to Supabase Postgres!"}
-
 @app.get("/ping")
 def ping():
     return {"status": "ok"}
 
+@app.get("/ping-db")
+def ping_db():
+    # Attempt to fetch something from a known table, or just check API
+    response = supabase.table("your_table_name").select("*").limit(1).execute()
+    if response.data:
+        return {"message": "Connected to Supabase!"}
+    return {"message": "Connected, but no data found."}
