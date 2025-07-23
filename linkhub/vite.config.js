@@ -12,6 +12,6 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: ['5173-ogagaakpowe-linkhubbook-dqp9oiaqehx.ws-eu120.gitpod.io']
+    allowedHosts: ['5173-ogagaakpowe-linkhubbook-hhl14hvxn3l.ws-eu120.gitpod.io']
   }
 })
