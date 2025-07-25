@@ -13,9 +13,9 @@ const BookmarksPage = () => {
   const [loading, setLoading] = useState(false);
 
   const handleAddBookmark = async (newBookmarkData) => {
-    console.log("Received in parent:", newBookmarkData);
     try {
-      console.log("Entered try block");
+      
+      console.log("Received in parent:", newBookmarkData);
       const newBookmark = await createBookmark(newBookmarkData);
       setBookmarks((prev) => [newBookmark, ...prev]);
     } catch (err) {
@@ -81,8 +81,9 @@ const BookmarksPage = () => {
   }, [showForm]);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-3xl mx-auto space-y-6">
+    <div className="w-full bg-gray-50 py-8 px-4 min-h-screen">
+
+      <div className="mx-auto space-y-6">
         <header className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Your Bookmarks</h1>
           <Button onClick={() => setShowForm(true)}>Add Bookmark</Button>

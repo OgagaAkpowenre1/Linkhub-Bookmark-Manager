@@ -1,11 +1,14 @@
-function Navbar({ onLogout, email = "user@example.com" }) {
+
+
+function Navbar({ onLogout, email="user@example.com" }) {
   const avatarLetter = email.charAt(0).toUpperCase();
 
   return (
-    <div className="flex justify-between items-center px-8 py-4 bg-white shadow-md sticky top-0 z-50">
+    <div className="w-full flex justify-between items-center px-6 py-4 bg-white shadow-md sticky top-0 z-50">
+
       <h1 className="text-2xl text-gray-800 font-bold">Linkhub</h1>
 
-      <div className="flex items-center space-x-4">
+      {email && <div className="flex items-center space-x-4">
         <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
             style={{backgroundColor: stringToColor(email)}}
         >
@@ -17,7 +20,7 @@ function Navbar({ onLogout, email = "user@example.com" }) {
         >
           Log out
         </button>
-      </div>
+      </div>}
     </div>
   );
 }

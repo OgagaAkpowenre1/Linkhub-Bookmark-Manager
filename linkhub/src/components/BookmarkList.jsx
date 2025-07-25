@@ -2,7 +2,7 @@ import BookmarkCard from "./BookmarkCard";
 
 const BookmarkList = ({ bookmarks, onDelete }) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 overflow-y-auto">
       {/* {bookmarks.map((bookmark) => (
         <BookmarkCard key={bookmark.id} bookmark={bookmark} onDelete={onDelete} />
       ))} */}
