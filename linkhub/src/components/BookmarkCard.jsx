@@ -7,7 +7,7 @@ import {
 import { Button } from "../components/ui/button";
 
 const BookmarkCard = ({ bookmark, onDelete }) => {
-  return (
+  return ( 
     <Card>
       <CardHeader className="flex flex-col items-center text-center gap-2">
         <CardTitle className="text-lg font-medium">

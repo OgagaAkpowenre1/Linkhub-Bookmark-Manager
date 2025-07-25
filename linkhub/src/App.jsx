@@ -4,6 +4,7 @@ import LoginPage from './Pages/LoginPage';
 import BookmarksPage from './Pages/BookmarksPage';
 import { useEffect, useState } from 'react';
 import { supabase } from './auth/supabaseClient';
+import Navbar from './components/Navbar';
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -51,6 +52,8 @@ useEffect(() => {
 
 
   return (
+    <div>
+    <Navbar />
     <BrowserRouter>
       <Routes>
         <Route
@@ -67,5 +70,6 @@ useEffect(() => {
         />
       </Routes>
     </BrowserRouter>
+    </div>
   );
 }

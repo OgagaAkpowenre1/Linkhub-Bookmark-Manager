@@ -8,7 +8,7 @@ const BookmarkList = ({ bookmarks, onDelete }) => {
       ))} */}
       {bookmarks.map((bookmark, index) =>
         bookmark ? (
-          <BookmarkCard
+          <BookmarkCard 
             key={bookmark.id || index}
             bookmark={bookmark}
             onDelete={onDelete}
