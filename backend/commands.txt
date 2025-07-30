@@ -18,8 +18,8 @@ take db url and other urls and store as env values
 Google console cloud
 
 to do
-add google sign up
-add bookmark CRUD routes
-add tags CRUD routes
+add bookmark editing
+add tag filtering
+add url image generation
 improve styling
 

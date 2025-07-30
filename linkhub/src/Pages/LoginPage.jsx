@@ -9,16 +9,15 @@ import {
 } from "../components/ui/card";
 import { supabase } from "../auth/supabaseClient";
 
-const LoginPage = () => {
+const LoginPage = ({isLoading, setIsLoading}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // 👈 toggle state
   const [error, setError] = useState(null);
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
 
   const handleLogin = async () => {
-    setLoading(true);
+    setIsLoading(true);
     setError(null);
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -34,11 +33,11 @@ const LoginPage = () => {
       }
     }
 
-    setLoading(false);
+    setIsLoading(false);
   };
 
   const handleSignup = async () => {
-    setLoading(true);
+    setIsLoading(true);
     setError(null);
     const { error } = await supabase.auth.signUp({
       email,
@@ -51,7 +50,7 @@ const LoginPage = () => {
       setShowSignupPrompt(false);
     }
 
-    setLoading(false);
+    setIsLoading(false);
   };
 
   const handleGoogleLogin = async () => {
@@ -89,8 +88,8 @@ const LoginPage = () => {
 
           {error && <p className="text-sm text-red-500">{error}</p>}
 
-          <Button className="w-full" onClick={handleLogin} disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+          <Button className="w-full" onClick={handleLogin} disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Login"}
           </Button>
 
           <div className="relative text-center text-sm text-gray-500">

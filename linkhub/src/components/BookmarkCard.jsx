@@ -30,6 +30,20 @@ const BookmarkCard = ({ bookmark, onDelete }) => {
       </CardHeader>
       <CardContent>
         <p className="text-sm text-gray-600">{bookmark.description}</p>
+
+                {/* Tag List */}
+        {bookmark.tags && bookmark.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {bookmark.tags.map((tag, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded-full"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

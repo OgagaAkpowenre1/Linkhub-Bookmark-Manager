@@ -4,7 +4,7 @@ import BookmarkForm from "../components/BookmarkForm";
 import BookmarkList from "../components/BookmarkList";
 import { Button } from "../components/ui/button";
 import { supabase } from "../auth/supabaseClient";
-import Navbar from "../components/Navbar";
+import Loader from "../components/Loader";
 
 const BookmarksPage = () => {
   const [showForm, setShowForm] = useState(false);
@@ -14,9 +14,11 @@ const BookmarksPage = () => {
 
   const handleAddBookmark = async (newBookmarkData) => {
     try {
-      
       console.log("Received in parent:", newBookmarkData);
       const newBookmark = await createBookmark(newBookmarkData);
+      
+      console.log("Returned from Supabase:", newBookmark);
+
       setBookmarks((prev) => [newBookmark, ...prev]);
     } catch (err) {
       console.error(err);
@@ -82,14 +84,17 @@ const BookmarksPage = () => {
 
   return (
     <div className="w-full bg-gray-50 py-8 px-4 min-h-screen">
-
       <div className="mx-auto space-y-6">
-        <header className="flex items-center justify-between">
+        <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-3xl font-semibold">Your Bookmarks</h1>
           <Button onClick={() => setShowForm(true)}>Add Bookmark</Button>
         </header>
 
-        <BookmarkList bookmarks={bookmarks} onDelete={handleDeleteBookmark} />
+        {loading ? (
+          <Loader loading={loading} />
+        ) : (
+          <BookmarkList bookmarks={bookmarks} onDelete={handleDeleteBookmark} />
+        )}
       </div>
       {showForm && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">

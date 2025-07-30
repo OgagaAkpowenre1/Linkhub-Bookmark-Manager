@@ -1,7 +1,5 @@
-
-
-function Navbar({ onLogout, email="user@example.com" }) {
-  const avatarLetter = email.charAt(0).toUpperCase();
+function Navbar({ onLogout, email }) {
+  const avatarLetter = email?.charAt(0)?.toUpperCase();
 
   return (
     <div className="w-full flex justify-between items-center px-6 py-4 bg-white shadow-md sticky top-0 z-50">

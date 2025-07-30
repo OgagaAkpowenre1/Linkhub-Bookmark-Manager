@@ -1,20 +1,15 @@
 import "./App.css";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./Pages/LoginPage";
 import BookmarksPage from "./Pages/BookmarksPage";
 import { useEffect, useState } from "react";
 import { supabase } from "./auth/supabaseClient";
 import Navbar from "./components/Navbar";
+import FullscreenLoader from "./components/FullScreenLoader";
 
 export default function App() {
   const [session, setSession] = useState(null);
-  // const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Check if a session exists on app load
   useEffect(() => {
@@ -56,25 +51,39 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (session === null && isLoading) {
+      setIsLoading(false); // stop loader if session has changed to null
+    }
+  }, [session, isLoading]);
+
   const handleLogout = async () => {
+    setIsLoading(true);
     await supabase.auth.signOut();
     setSession(null);
-    // navigate("/");
+    setIsLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <BrowserRouter>
-        {/* <div className="min-h-screen bg-gray-50 flex flex-col"> */}
+        <div className="min-h-screen bg-gray-50 flex flex-col">
           
-            <Navbar onLogout={handleLogout} email={session?.user?.email} />
-          
+          <Navbar onLogout={handleLogout} email={session?.user?.email} />
+          <FullscreenLoader loading={isLoading} />
           <div className="flex-1 overflow-y-auto">
             <Routes>
               <Route
                 path="/"
                 element={
-                  session ? <Navigate to="/bookmarks" replace /> : <LoginPage />
+                  session ? (
+                    <Navigate to="/bookmarks" replace />
+                  ) : (
+                    <LoginPage
+                      isLoading={isLoading}
+                      setIsLoading={setIsLoading}
+                    />
+                  )
                 }
               />
               <Route
@@ -85,7 +94,7 @@ export default function App() {
               />
             </Routes>
           </div>
-        {/* </div> */}
+        </div>
       </BrowserRouter>
     </div>
   );
