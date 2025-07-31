@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
 
-const BookmarkForm = ({ onAdd }) => {
+const BookmarkForm = ({ onAdd, onClose, initialData, onEdit }) => {
   const [form, setForm] = useState({
-    title: "",
-    url: "",
-    description: "",
-    tags: "",
+    title: initialData?.title || "",
+    url: initialData?.url || "",
+    description: initialData?.description || "",
+    tags: initialData?.tags?.join(", ") || "",
   });
 
   const handleChange = (e) => {
@@ -14,32 +14,56 @@ const BookmarkForm = ({ onAdd }) => {
     if (!name) return; // 🛡️ Prevent corrupting state with blank key
     setForm((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleSubmit = async (e) => {
-    e.preventDefault(); // prevents page reload
-    console.log("Submitting...");
-
-    if (!form.url || !form.title) {
-      alert("Title and URL are required.");
-      return;
-    }
-
-    // const formData = new FormData(e.target);
-    // for (let [key, val] of formData.entries()) {
-    //   console.log(`key: "${key}", value: "${val}"`);
-    // }
+    e.preventDefault();
 
     const parsedTags = form.tags
       .split(",")
       .map((tag) => tag.trim().toLowerCase())
       .filter((tag) => tag.length > 0);
-    
-    await onAdd({
+
+    const updatedData = {
       ...form,
-      tags: parsedTags, // pass parsed tags
-    });
-    setForm({ title: "", url: "", description: "", tags: "" }); // Reset form
+      tags: parsedTags,
+    };
+
+    try {
+      if (initialData && onEdit) {
+        // Check if changes were made
+        const unchanged =
+          initialData.title === form.title &&
+          initialData.url === form.url &&
+          initialData.description === form.description &&
+          initialData.tags?.join(",") === parsedTags.join(",");
+
+        if (unchanged) {
+          alert("No changes detected.");
+          return;
+        }
+
+        await onEdit({
+          ...initialData, // keep the ID and any other important fields
+          ...updatedData,
+        });
+      } else {
+        await onAdd(updatedData);
+      }
+
+      onClose(); // close modal/form after success
+    } catch (err) {
+      console.error("Submission error:", err.message);
+      alert("There was an error. Please try again.");
+    }
   };
+
+  useEffect(() => {
+    setForm({
+      title: initialData?.title || "",
+      url: initialData?.url || "",
+      description: initialData?.description || "",
+      tags: initialData?.tags?.join(", ") || "",
+    });
+  }, [initialData]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-2">
@@ -82,7 +106,10 @@ const BookmarkForm = ({ onAdd }) => {
         value={imageUrl}
         onChange={(e) => setImageUrl(e.target.value)}
       /> */}
-      <Button type="submit">Add Bookmark</Button>
+      {/* <Button type="submit">Add Bookmark</Button> */}
+      <Button type="submit">
+        {initialData ? "Save Changes" : "Add Bookmark"}
+      </Button>
     </form>
   );
 };

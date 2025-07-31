@@ -17,10 +17,16 @@ const BookmarksPage = () => {
   const [tags, setTags] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
+  const [bookmarkToEdit, setBookmarkToEdit] = useState(null);
   const bookmarksToShow =
     filteredBookmarks.length > 0 || searchQuery || selectedTags.length > 0
       ? filteredBookmarks
       : bookmarks;
+
+  const editBookmark = (bookmark) => {
+    setBookmarkToEdit(bookmark);
+    setShowForm(true);
+  };
 
   const handleAddBookmark = async (newBookmarkData) => {
     try {
@@ -35,6 +41,25 @@ const BookmarksPage = () => {
       alert("Failed to add bookmark");
     }
   };
+
+  const handleEditBookmark = async (updatedBookmark) => {
+  try {
+    const { id, ...fieldsToUpdate } = updatedBookmark;
+
+    const { error } = await supabase
+      .from("bookmarks")
+      .update(fieldsToUpdate)
+      .eq("id", id);
+
+    if (error) throw error;
+
+    // Optionally re-fetch bookmarks or optimistically update UI
+    fetchData(); // if you're using a fetch function
+  } catch (err) {
+    console.error("Edit failed:", err.message);
+  }
+};
+
 
   const handleDeleteBookmark = async (id) => {
     try {
@@ -128,14 +153,13 @@ const BookmarksPage = () => {
           setSelectedTags={setSelectedTags}
         />
 
-       
-
         {loading ? (
           <Loader loading={loading} />
         ) : (
           <BookmarkList
             bookmarks={bookmarksToShow}
             onDelete={handleDeleteBookmark}
+            onEdit={editBookmark}
           />
         )}
       </div>
@@ -145,7 +169,15 @@ const BookmarksPage = () => {
             ref={formRef}
             className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md"
           >
-            <BookmarkForm onAdd={handleAddBookmark} />
+            <BookmarkForm
+              onAdd={handleAddBookmark}
+              initialData={bookmarkToEdit}
+              onClose={() => {
+                setShowForm(false);
+                setBookmarkToEdit(null);
+              }}
+              onEdit={handleEditBookmark}
+            />
           </div>
         </div>
       )}

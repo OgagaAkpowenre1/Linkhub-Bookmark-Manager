@@ -1,12 +1,12 @@
 import {
   Card,
   CardContent,
-  CardHeader,
+  CardHeader, 
   CardTitle,
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 
-const BookmarkCard = ({ bookmark, onDelete }) => {
+const BookmarkCard = ({ bookmark, onDelete, onEdit }) => {
   return ( 
     <Card>
       <CardHeader className="flex flex-col items-center text-center gap-2">
@@ -20,13 +20,22 @@ const BookmarkCard = ({ bookmark, onDelete }) => {
             {bookmark.title}
           </a>
         </CardTitle>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => onDelete(bookmark.id)}
-        >
-          Delete
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onEdit(bookmark)}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => onDelete(bookmark.id)}
+          >
+            Delete
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-gray-600">{bookmark.description}</p>
