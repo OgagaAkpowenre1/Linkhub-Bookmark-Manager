@@ -11,7 +11,7 @@ const BookmarkCard = ({ bookmark, onDelete }) => {
     <Card>
       <CardHeader className="flex flex-col items-center text-center gap-2">
         <CardTitle className="text-lg font-medium">
-          <a
+          <a 
             href={bookmark.url}
             target="_blank"
             rel="noopener noreferrer"

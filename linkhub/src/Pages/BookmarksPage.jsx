@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import { createBookmark, deleteBookmark } from "../lib/bookmarks";
 import BookmarkForm from "../components/BookmarkForm";
 import BookmarkList from "../components/BookmarkList";
+import BookmarkCard from "../components/BookmarkCard";
+import FilterBar from "../components/FilterBar";
 import { Button } from "../components/ui/button";
 import { supabase } from "../auth/supabaseClient";
 import Loader from "../components/Loader";
@@ -11,14 +13,22 @@ const BookmarksPage = () => {
   const formRef = useRef(null);
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [filteredBookmarks, setFilteredBookmarks] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTags, setSelectedTags] = useState([]);
+  const bookmarksToShow =
+    filteredBookmarks.length > 0 || searchQuery || selectedTags.length > 0
+      ? filteredBookmarks
+      : bookmarks;
 
   const handleAddBookmark = async (newBookmarkData) => {
     try {
       console.log("Received in parent:", newBookmarkData);
       const newBookmark = await createBookmark(newBookmarkData);
-      
-      console.log("Returned from Supabase:", newBookmark);
 
+      console.log("Returned from Supabase:", newBookmark);
+      fetchData();
       setBookmarks((prev) => [newBookmark, ...prev]);
     } catch (err) {
       console.error(err);
@@ -29,6 +39,7 @@ const BookmarksPage = () => {
   const handleDeleteBookmark = async (id) => {
     try {
       await deleteBookmark(id);
+      fetchData();
       setBookmarks((prev) => prev.filter((b) => b.id !== id));
     } catch (err) {
       console.error(err);
@@ -36,7 +47,23 @@ const BookmarksPage = () => {
     }
   };
 
-  async function fetchBookmarks() {
+  const onFilterChange = (query, tags) => {
+    setSearchQuery(query);
+    setSelectedTags(tags);
+
+    let filtered = bookmarks.filter((bookmark) => {
+      const matchesSearch =
+        bookmark.title.toLowerCase().includes(query.toLowerCase()) ||
+        bookmark.description.toLowerCase().includes(query.toLowerCase());
+
+      const matchesTags = tags.every((tag) => bookmark.tags?.includes(tag));
+      return matchesSearch && matchesTags;
+    });
+
+    setFilteredBookmarks(filtered);
+  };
+
+  async function fetchData() {
     setLoading(true);
 
     const { data: userData, error: userError } = await supabase.auth.getUser();
@@ -60,12 +87,15 @@ const BookmarksPage = () => {
       setBookmarks(data);
     }
 
+    const { data: tags } = await supabase.from("tags").select("name");
+    setTags(tags.map((t) => t.name));
+
     setLoading(false);
   }
 
   // Only run this ONCE on component mount
   useEffect(() => {
-    fetchBookmarks();
+    fetchData();
   }, []);
 
   // Handle outside click only when form is open
@@ -89,11 +119,24 @@ const BookmarksPage = () => {
           <h1 className="text-3xl font-semibold">Your Bookmarks</h1>
           <Button onClick={() => setShowForm(true)}>Add Bookmark</Button>
         </header>
+        <FilterBar
+          tags={tags}
+          onFilterChange={onFilterChange}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+        />
+
+       
 
         {loading ? (
           <Loader loading={loading} />
         ) : (
-          <BookmarkList bookmarks={bookmarks} onDelete={handleDeleteBookmark} />
+          <BookmarkList
+            bookmarks={bookmarksToShow}
+            onDelete={handleDeleteBookmark}
+          />
         )}
       </div>
       {showForm && (
