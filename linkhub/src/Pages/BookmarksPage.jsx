@@ -2,7 +2,6 @@ import { useRef, useState, useEffect } from "react";
 import { createBookmark, deleteBookmark } from "../lib/bookmarks";
 import BookmarkForm from "../components/BookmarkForm";
 import BookmarkList from "../components/BookmarkList";
-import BookmarkCard from "../components/BookmarkCard";
 import FilterBar from "../components/FilterBar";
 import { Button } from "../components/ui/button";
 import { supabase } from "../auth/supabaseClient";
@@ -43,23 +42,22 @@ const BookmarksPage = () => {
   };
 
   const handleEditBookmark = async (updatedBookmark) => {
-  try {
-    const { id, ...fieldsToUpdate } = updatedBookmark;
+    try {
+      const { id, ...fieldsToUpdate } = updatedBookmark;
 
-    const { error } = await supabase
-      .from("bookmarks")
-      .update(fieldsToUpdate)
-      .eq("id", id);
+      const { error } = await supabase
+        .from("bookmarks")
+        .update(fieldsToUpdate)
+        .eq("id", id);
 
-    if (error) throw error;
+      if (error) throw error;
 
-    // Optionally re-fetch bookmarks or optimistically update UI
-    fetchData(); // if you're using a fetch function
-  } catch (err) {
-    console.error("Edit failed:", err.message);
-  }
-};
-
+      // Optionally re-fetch bookmarks or optimistically update UI
+      fetchData(); // if you're using a fetch function
+    } catch (err) {
+      console.error("Edit failed:", err.message);
+    }
+  };
 
   const handleDeleteBookmark = async (id) => {
     try {
